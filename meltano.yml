@@ -1,0 +1,34 @@
+version: 1
+default_environment: dev
+project_id: 4c8160ef-7d72-4c77-9bfa-299cd99b35c8
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    config:
+      database: northwind
+      user: northwind_user
+      password: thewindisblowing
+      port: 5432
+      host: localhost
+      # sqlalchemy_url: postgresql://northwind_user:thewindisblowing@localhost:5432/northwind
+    select:
+    - public-suppliers.*
+  loaders:
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      database: warehouse
+      user: warehouse_user
+      password: warehouse_password
+      host: localhost
+      port: 5434
+      # sqlalchemy_url: postgresql://:@localhost:5434/
+      default_target_schema: public
+      load_method: overwrite
